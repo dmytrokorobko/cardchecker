@@ -27,7 +27,12 @@ const batch = [mymystery6, valid1, valid2, valid3, valid4, valid5, invalid1, inv
 
 
 // Add your functions below:
+//Task 3 - function has been divided into two functions due to the solution of task 7-2 below
 const validateCred = arr => {   
+   return validateCredCalc(arr) === 0 ? true : false;
+}
+
+const validateCredCalc = arr => {
    let total = 0;
    let isDouble = false;
 
@@ -43,10 +48,19 @@ const validateCred = arr => {
       }
    }
 
-   if (total % 10 === 0) return true;
-   else return false;
+   return total % 10;
 }
 
+function showAllValidatedCards(cards) {
+   const vals = [];
+   cards.forEach(card => {
+      const str = card.join('') + ' ' + validateCred(card);
+      vals.push(str);
+   });
+   return vals;
+}
+
+//Task 4
 const findInvalidCards = allCards => {
    const invalidCards = [];
    allCards.forEach(card => {
@@ -55,6 +69,7 @@ const findInvalidCards = allCards => {
    return invalidCards;
 }
 
+//Task 5
 const idInvalidCardCompanies = invalidCards => {
    const companies = [];
    const amex = 'Amex (American Express)';
@@ -73,11 +88,15 @@ const idInvalidCardCompanies = invalidCards => {
    return companies;
 }
 
+
+//Task 7-1 Converting Strings to Numbered Array
+//Convert one string to number
 const convertStringToCardNumber = cardString => {
    if (!cardString && cardNum.length < 1) return console.log('Uncorrect string');
    return Array.from(cardString, num => Number(num));
 }
 
+//Convert array of strings to array of numbers
 const convertStringsToCardNumbers = cardStrings => {
    const cards = [];
    cardStrings.forEach(string => {
@@ -87,29 +106,45 @@ const convertStringsToCardNumbers = cardStrings => {
    return cards;
 }
 
-const convertInvalidToValid = cards => {
-   const valid = [];
-   cards.forEach(card => {
-      let temp = [...card];
-      let j = 2;
-      do {
-         for (let i = j; i >= 2; i --) temp[temp.length - i] = getRandomNumber();
-         if (j <= temp.length - 3) j++;        
-      } while (!validateCred(temp));
-      valid.push(temp);
-   });
-   return valid;
-}
 
-const getRandomNumber = () => Math.floor(Math.random() * 10);
+//Task 7-2 Convert Invalid cards into Valid
+const convertInvalidToValid = cards => {
+   cards.forEach(card => {
+      const rem = validateCredCalc(card);
+      if (rem != 0) {
+         if (card[card.length - 1] >= rem) card[card.length - 1] = card[card.length - 1] - rem;
+         else card[card.length - 1] = 10 - rem + card[card.length - 1];
+      }      
+   });
+   return cards;
+}
 
 
 //Tests
+//Task 3 - validateCred function
+console.log('Task 3');
+console.log(showAllValidatedCards(batch));
+
+//Task 4 - findInvalidCards only
+console.log('Task 4');
+console.log(findInvalidCards(batch));
+
+//Task 5 - idInvalidCardCompanies
+console.log('Task 5');
 console.log(idInvalidCardCompanies(findInvalidCards(batch)));
 
-//Tests from string
-const cards = ['36728952810889', '4024007130004728568', '30528378870277', '367583754856937585'];
-console.log(validateCred(convertInvalidToValid(findInvalidCards(convertStringsToCardNumbers(cards)))[0]));
+//Task 7-1 Convert Strings into numbers array
+console.log('Task 7-1');
+const batch2 = ['36728952810889', '4024007130004728568', '30528378870277', '367583754856937585'];
+console.log(showAllValidatedCards(convertStringsToCardNumbers(batch2)));
+
+//Task7-2 Convert Invalid Cards into Valid
+console.log('Task 7-2');
+console.log('////////List of Invalid cards////////////////');
+console.log(showAllValidatedCards(findInvalidCards(batch)));
+console.log('////////List of Coverted Valid cards////////////////');
+console.log(showAllValidatedCards(convertInvalidToValid(findInvalidCards(batch))));
+
 
 
 
